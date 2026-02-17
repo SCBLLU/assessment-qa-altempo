@@ -14,6 +14,9 @@ Consulte el estado actual de la plataforma en el siguiente enlace:
 * **Passing (Verde):** El flujo de registro opera correctamente.
 * **Failing (Rojo):** Se ha detectado una incidencia crítica que impide el uso de la plataforma.
 
+### Nota 
+Por limitaciones del plan trial de Checkly, el dashboard no muestra errores directamente en la interfaz por optimización de recursos. Se recomienda revisar los logs del servidor para obtener detalles completos de las incidencias.
+
 ---
 
 ## Estado Actual: Falla Crítica Detectada
@@ -32,7 +35,7 @@ Se adjuntan los documentos de soporte para la toma de decisiones y planificació
 
 | Documento | Descripción |
 | :--- | :--- |
-| **[Reporte de Hallazgos]()** | Listado de bugs técnicos y mejoras de UX priorizados por riesgo. |
+| **[Reporte de Hallazgos](./docs/Reporte_QA_UX.xlsx)** | Listado de bugs técnicos y mejoras de UX priorizados por riesgo. |
 | **[Plan de Automatización](./docs/PLAN_GANTT.md)** | Roadmap de ejecución para cubrir Perfil, Portafolio y Buscador. |
 | **[Estrategia de Seguridad](./docs/ESTRATEGIA_SEGURA.md)** | Protocolo de aislamiento de datos para pruebas en Producción. |
 
@@ -57,4 +60,4 @@ El monitor está vinculado al correo del equipo de QA/Producto.
 * **Cobertura:** Flujo End-to-End de Registro de Músico.
 * **Frecuencia:** Ejecución automática cada 10 minutos.
 * **Seguridad de Datos:** Los usuarios generados utilizan el prefijo "TesterQA" y correos únicos para no contaminar las métricas de negocio.
-* **Tecnología:** Playwright + Checkly.
+* **Tecnología:** Playwright + Checkly Plan Trial.
