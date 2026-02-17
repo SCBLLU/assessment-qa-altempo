@@ -8,7 +8,7 @@ Este repositorio centraliza la estrategia de aseguramiento de calidad y monitore
 
 Consulte el estado actual de la plataforma en el siguiente enlace:
 
-**https://aaj39sm4.checkly-dashboards.com/**
+**https://ac2vnxek.checkly-dashboards.com/**
 
 ### Interpretación del Dashboard
 * **Passing (Verde):** El flujo de registro opera correctamente.

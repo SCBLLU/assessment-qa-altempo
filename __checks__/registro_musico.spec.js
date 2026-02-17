@@ -98,26 +98,45 @@ test('Registro de Musico - Flujo End-to-End', async ({ page }) => {
         await page.locator('#phone_number').press('Tab');
     });
 
-    // Enviar formulario
-    await test.step('Enviar y Validar', async () => {
+    // Enviar y Validar con Intercepción de Red
+    await test.step('Enviar Formulario y Validar Respuesta', async () => {
         console.log('Intentando crear usuario...');
+
+        // Escuchar la respuesta de la red antes de hacer clic
+        const responsePromise = page.waitForResponse(response =>
+            response.url().includes('/api/') && response.request().method() === 'POST'
+            , { timeout: 10000 }).catch(() => null); // No fallar si no hay respuesta de red, seguimos con UI
+
         await page.getByRole('button', { name: /crear|sign up|create/i }).last().click();
 
+        // 1. Verificación Técnica (Código de estado HTTP)
+        const response = await responsePromise;
+        if (response && response.status() >= 500) {
+            throw new Error(`BLOCKER DETECTADO: El servidor respondió con Error ${response.status()} al crear la cuenta.`);
+        }
+
+        // 2. Verificación Visual (Lo que ve el usuario)
         const exito = page.getByText(/bienvenido|welcome/i);
-        const falloServer = page.locator('text=/error.*servidor|500|failed|internal server error/i');
+        // Buscamos cualquier indicador de error genérico o de servidor
+        const falloServer = page.locator('text=/error.*servidor|500|failed|internal server error|unexpected error/i');
         const falloValidacion = page.getByText(/obligator|required|debes tener|must be/i).first();
 
+        // Esperamos a que aparezca cualquiera de los tres estados
         await expect(exito.or(falloServer).or(falloValidacion)).toBeVisible({ timeout: 20000 });
 
         if (await falloServer.isVisible()) {
             const msg = await falloServer.innerText();
-            throw new Error(`Se encontró un error crítico en el servidor al intentar registrar. El sistema mostró: ${msg}`);
+            // Este mensaje es el que saldrá en el encabezado del Dashboard
+            throw new Error(`ERROR CRÍTICO EN PANTALLA: El sistema muestra mensaje de error: "${msg}"`);
         }
 
         if (await falloValidacion.isVisible()) {
             const texto = await falloValidacion.innerText();
-            throw new Error(`Error de validacion: El formulario pide: "${texto}"`);
+            throw new Error(`Error de validación en formulario: "${texto}"`);
         }
+
+        // Si llegamos aquí y no hay éxito visible, algo raro pasó
+        await expect(exito).toBeVisible({ message: 'No se vio mensaje de éxito ni de error conocido.' });
     });
 
     console.log('Prueba finalizada.');
